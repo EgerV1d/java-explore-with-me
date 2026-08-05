@@ -8,15 +8,12 @@ import ru.practicum.stats.server.model.Hit;
 import ru.practicum.stats.server.repository.HitRepository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService {
     private final HitRepository hitRepository;
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void addHit(EndpointHitDto dto) {
@@ -24,7 +21,7 @@ public class StatsServiceImpl implements StatsService {
         hit.setApp(dto.getApp());
         hit.setUri(dto.getUri());
         hit.setIp(dto.getIp());
-        hit.setEventTime(LocalDateTime.parse(dto.getTimestamp(), FORMATTER));
+        hit.setEventTime(dto.getTimestamp());
 
         hitRepository.save(hit);
     }
