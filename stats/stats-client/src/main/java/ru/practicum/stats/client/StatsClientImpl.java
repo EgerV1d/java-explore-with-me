@@ -30,6 +30,7 @@ public class StatsClientImpl implements StatsClient {
     @Override
     public void addHit(EndpointHitDto hitDto) {
         try {
+            log.info("Sending hit to stats-server: {}", hitDto);
             restTemplate.postForEntity(baseUrl + "/hit", hitDto, Void.class);
             log.debug("Hit sent: {}", hitDto);
         } catch (RestClientException e) {
@@ -43,7 +44,7 @@ public class StatsClientImpl implements StatsClient {
             UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl + "/stats")
                     .queryParam("start", start)
                     .queryParam("end", end)
-                    .queryParam("unique", false);
+                    .queryParam("unique", unique);
 
             if (uris != null && !uris.isEmpty()) {
                 uris.forEach(builder::queryParam);
