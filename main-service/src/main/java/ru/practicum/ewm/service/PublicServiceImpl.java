@@ -49,6 +49,8 @@ public class PublicServiceImpl implements PublicService {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    private static final LocalDateTime START_OF_TIME = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
+
     @Override
     public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid,
                                          final LocalDateTime rangeStart, final LocalDateTime rangeEnd,
@@ -81,6 +83,14 @@ public class PublicServiceImpl implements PublicService {
         }
 
         List<EventShortDto> result = eventMapper.toShortDtoList(events);
+
+        for (int i = 0; i < result.size(); i++) {
+            EventShortDto dto = result.get(i);
+            Event event = events.get(i);
+            Long confirmedCount = requestRepository.countConfirmedRequestsByEventId(event.getId());
+            dto.setConfirmedRequests(confirmedCount);
+        }
+
         fillViewsAndRequests(result, events);
 
         if ("VIEWS".equals(sort) && result.size() > 1) {
@@ -101,6 +111,10 @@ public class PublicServiceImpl implements PublicService {
         }
 
         EventFullDto dto = eventMapper.toFullDto(event);
+
+        Long confirmedCount = requestRepository.countConfirmedRequestsByEventId(event.getId());
+        dto.setConfirmedRequests(confirmedCount);
+
         fillViewsAndRequestsForFull(dto, event);
         return dto;
     }
@@ -158,10 +172,10 @@ public class PublicServiceImpl implements PublicService {
 
         try {
             List<ViewStatsDto> stats = statsClient.getStats(
-                    LocalDateTime.now().minusYears(1).format(FORMATTER),
-                    LocalDateTime.now().format(FORMATTER),
+                    START_OF_TIME.format(FORMATTER),
+                    LocalDateTime.now().withNano(0).plusSeconds(1).format(FORMATTER),
                     uris,
-                    false
+                    true
             );
 
             Map<String, Long> viewsMap = stats.stream()
@@ -203,10 +217,10 @@ public class PublicServiceImpl implements PublicService {
 
         try {
             List<ViewStatsDto> stats = statsClient.getStats(
-                    LocalDateTime.now().minusYears(1).format(FORMATTER),
-                    LocalDateTime.now().format(FORMATTER),
+                    START_OF_TIME.format(FORMATTER),
+                    LocalDateTime.now().withNano(0).plusSeconds(1).format(FORMATTER),
                     List.of(uri),
-                    false
+                    true
             );
 
             log.info("Получена статистика для события {}: {}", event.getId(), stats);

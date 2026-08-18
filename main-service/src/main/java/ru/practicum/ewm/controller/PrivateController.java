@@ -29,7 +29,7 @@ public class PrivateController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable Long userId,
                                  @Valid @RequestBody NewEventDto request) {
-        log.info("Add event: userId={}, request={}" , userId, request);
+        log.info("Add event: userId={}, request={}", userId, request);
         return privateService.addEvent(userId, request);
     }
 

@@ -14,6 +14,7 @@ import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.dto.ViewStatsDto;
 
 import java.net.URI;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import java.util.List;
 public class StatsClientImpl implements StatsClient {
     private final RestTemplate restTemplate = new RestTemplate();
     private final String baseUrl;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public StatsClientImpl(@Value("${stats-server.url:http://localhost:9090}") String baseUrl) {
         this.baseUrl = baseUrl;
@@ -47,9 +50,12 @@ public class StatsClientImpl implements StatsClient {
                     .queryParam("unique", unique);
 
             if (uris != null && !uris.isEmpty()) {
-                uris.forEach(builder::queryParam);
+                for (String uri : uris) {
+                    builder.queryParam("uris", uri);
+                }
             }
             URI uri = builder.build().encode().toUri();
+            log.info("Requesting stats from: {}", uri);
 
             ResponseEntity<List<ViewStatsDto>> response = restTemplate.exchange(
                     uri,

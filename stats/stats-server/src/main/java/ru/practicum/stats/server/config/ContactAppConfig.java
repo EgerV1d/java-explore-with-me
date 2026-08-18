@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
@@ -16,10 +17,13 @@ public class ContactAppConfig {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         return builder -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)
+                    .withZone(ZoneOffset.UTC);
+
             builder.serializerByType(LocalDateTime.class,
-                    new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)));
+                    new LocalDateTimeSerializer(formatter));
             builder.deserializerByType(LocalDateTime.class,
-                    new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)));
+                    new LocalDateTimeDeserializer(formatter));
         };
     }
 }

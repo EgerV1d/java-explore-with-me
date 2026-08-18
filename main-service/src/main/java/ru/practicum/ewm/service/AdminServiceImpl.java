@@ -26,6 +26,7 @@ public class AdminServiceImpl implements AdminService {
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
     private final LocationRepository locationRepository;
+    private final ParticipationRequestRepository requestRepository;
 
     private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
@@ -99,25 +100,27 @@ public class AdminServiceImpl implements AdminService {
     public List<EventFullDto> getEvents(List<Long> users, List<Event.EventState> states,
                                         List<Long> categories, LocalDateTime rangeStart,
                                         LocalDateTime rangeEnd, int from, int size) {
-        int validSize = Math.max(size, 10);
+        int validSize = size > 0 ? size : 10;
         int page = from / validSize;
         Pageable pageable = PageRequest.of(page, validSize);
 
-        LocalDateTime start = rangeStart != null ? rangeStart : LocalDateTime.now().minusYears(100);
-        LocalDateTime end = rangeEnd != null ? rangeEnd : LocalDateTime.now().plusYears(100);
-
-        log.info("Admin getEvents params: users={}, states={}, categories={}, start={}, end={}, pageable={}",
-                users, states, categories, start, end, pageable);
+        LocalDateTime start = rangeStart != null ?
+                rangeStart : LocalDateTime.of(1900, 1, 1, 0, 0, 0);
+        LocalDateTime end = rangeEnd != null ?
+                rangeEnd : LocalDateTime.of(3000, 1, 1, 0, 0, 0);
 
         List<Event> events = eventRepository.findAllByAdminFilters(users, states, categories,
                 start, end, pageable);
 
-        log.info("Admin getEvents found {} events", events.size());
-        for (Event e : events) {
-            log.info("Event: id={}, state={}, eventDate={}", e.getId(), e.getState(), e.getEventDate());
+        List<EventFullDto> result = eventMapper.toFullDtoList(events);
+
+        for (EventFullDto dto : result) {
+            Long confirmedCount = requestRepository.countConfirmedRequestsByEventId(dto.getId());
+            dto.setConfirmedRequests(confirmedCount);
+            log.debug("Event id={} has {} confirmed requests", dto.getId(), confirmedCount);
         }
 
-        return eventMapper.toFullDtoList(events);
+        return result;
     }
 
     @Override

@@ -84,7 +84,7 @@ public class PublicController {
                     .app("ewm-main-service")
                     .uri(uri)
                     .ip(ip)
-                    .timestamp(LocalDateTime.now())
+                    .timestamp(LocalDateTime.now().withNano(0))
                     .build();
             statsClient.addHit(hit);
             log.debug("Stats sent: uri={}, ip={}", uri, ip);

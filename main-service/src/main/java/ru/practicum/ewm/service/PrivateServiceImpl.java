@@ -39,7 +39,16 @@ public class PrivateServiceImpl implements PrivateService {
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findAllByInitiatorId(userId, pageable);
-        return eventMapper.toShortDtoList(events);
+        List<EventShortDto> result = eventMapper.toShortDtoList(events);
+
+        for (int i = 0; i < result.size(); i++) {
+            EventShortDto dto = result.get(i);
+            Event event = events.get(i);
+            Long confirmedCount = requestRepository.countConfirmedRequestsByEventId(event.getId());
+            dto.setConfirmedRequests(confirmedCount);
+        }
+
+        return result;
     }
 
     @Override

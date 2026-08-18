@@ -22,7 +22,7 @@ public class AdminController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto addUser(@Valid @RequestBody NewUserRequest request) {
-        log.info("Admin add user: {}" ,request);
+        log.info("Admin add user: {}", request);
         return adminService.addUser(request);
     }
 
