@@ -15,11 +15,12 @@ import ru.practicum.ewm.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -35,6 +36,7 @@ public class AdminServiceImpl implements AdminService {
     private final LocationMapper locationMapper;
 
     @Override
+    @Transactional
     public UserDto addUser(NewUserRequest request) {
         User user = userMapper.toEntity(request);
         User saved = userRepository.save(user);
@@ -58,6 +60,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с id=" + userId + " не найден");
@@ -67,6 +70,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public CategoryDto addCategory(NewCategoryDto request) {
         Category category = categoryMapper.toEntity(request);
         Category saved = categoryRepository.save(category);
@@ -75,6 +79,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public CategoryDto updateCategory(Long categoryId, CategoryDto request) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Категория с id=" + categoryId + " не найдено"));
@@ -85,6 +90,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Категория с id=" + categoryId + " не найдена"));
@@ -114,16 +120,30 @@ public class AdminServiceImpl implements AdminService {
 
         List<EventFullDto> result = eventMapper.toFullDtoList(events);
 
-        for (EventFullDto dto : result) {
-            Long confirmedCount = requestRepository.countConfirmedRequestsByEventId(dto.getId());
-            dto.setConfirmedRequests(confirmedCount);
-            log.debug("Event id={} has {} confirmed requests", dto.getId(), confirmedCount);
+        if (!result.isEmpty()) {
+            List<Long> eventIds = events.stream()
+                    .map(Event::getId)
+                    .toList();
+            List<Object[]> counts = requestRepository.countConfirmedRequestsByEventIds(eventIds);
+
+            Map<Long, Long> confirmedMap = counts.stream()
+                    .collect(Collectors.toMap(
+                            arr -> (Long) arr[0],
+                            arr -> (Long) arr[1]
+                    ));
+
+            for (EventFullDto dto : result) {
+                Long confirmedCount = confirmedMap.getOrDefault(dto.getId(), 0L);
+                dto.setConfirmedRequests(confirmedCount);
+                log.debug("Event id={} has {} confirmed requests", dto.getId(), confirmedCount);
+            }
         }
 
         return result;
     }
 
     @Override
+    @Transactional
     public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest request) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
@@ -190,6 +210,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public CompilationDto addCompilation(NewCompilationDto request) {
         Compilation compilation = compilationMapper.toEntity(request);
         if (request.getEvents() != null && !request.getEvents().isEmpty()) {
@@ -202,6 +223,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public CompilationDto updateCompilation(Long compilationId, UpdateCompilationRequest request) {
         Compilation compilation = compilationRepository.findById(compilationId)
                 .orElseThrow(() -> new NotFoundException("Подборка с id=" + compilationId + " не найдена"));
@@ -222,6 +244,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(Long compilationId) {
         if (!compilationRepository.existsById(compilationId)) {
             throw new NotFoundException("Подборка с id=" + compilationId + " не найдена");

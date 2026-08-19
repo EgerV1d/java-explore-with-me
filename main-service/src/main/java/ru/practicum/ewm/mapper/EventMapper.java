@@ -1,6 +1,7 @@
 package ru.practicum.ewm.mapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.ewm.dto.EventFullDto;
 import ru.practicum.ewm.dto.EventShortDto;
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class EventMapper {
     private final CategoryMapper categoryMapper;
     private final UserShortMapper userShortMapper;
@@ -44,6 +46,7 @@ public class EventMapper {
             }
             return builder.build();
         } catch (Exception e) {
+            log.warn("Ошибка маппинга Event в EventShortDto: {}", e.getMessage(), e);
             return null;
         }
     }
@@ -83,6 +86,7 @@ public class EventMapper {
             }
             return builder.build();
         } catch (Exception e) {
+            log.warn("Ошибка маппинга Event в EventFullDto: {}", e.getMessage(), e);
             return null;
         }
     }
