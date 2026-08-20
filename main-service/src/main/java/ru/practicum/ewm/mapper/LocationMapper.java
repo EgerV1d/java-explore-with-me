@@ -1,0 +1,24 @@
+package ru.practicum.ewm.mapper;
+
+import org.springframework.stereotype.Component;
+import ru.practicum.ewm.dto.LocationDto;
+import ru.practicum.ewm.model.Location;
+
+@Component
+public class LocationMapper {
+    public LocationDto toDto(Location location) {
+        if (location == null) return null;
+        return LocationDto.builder()
+                .lat(location.getLat())
+                .lon(location.getLon())
+                .build();
+    }
+
+    public Location toEntity(LocationDto dto) {
+        if (dto == null) return null;
+        Location location = new Location();
+        location.setLat(dto.getLat());
+        location.setLon(dto.getLon());
+        return location;
+    }
+}
