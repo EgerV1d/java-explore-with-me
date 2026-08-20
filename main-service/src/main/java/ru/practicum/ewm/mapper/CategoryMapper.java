@@ -1,8 +1,8 @@
 package ru.practicum.ewm.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.ewm.dto.CategoryDto;
-import ru.practicum.ewm.dto.NewCategoryDto;
+import ru.practicum.ewm.dto.categoryDto.CategoryDto;
+import ru.practicum.ewm.dto.categoryDto.NewCategoryDto;
 import ru.practicum.ewm.model.Category;
 
 @Component

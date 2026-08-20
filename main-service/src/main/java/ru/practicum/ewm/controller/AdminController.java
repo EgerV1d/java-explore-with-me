@@ -5,7 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.categoryDto.CategoryDto;
+import ru.practicum.ewm.dto.categoryDto.NewCategoryDto;
+import ru.practicum.ewm.dto.compilationDto.CompilationDto;
+import ru.practicum.ewm.dto.compilationDto.NewCompilationDto;
+import ru.practicum.ewm.dto.compilationDto.UpdateCompilationRequest;
+import ru.practicum.ewm.dto.eventDto.EventFullDto;
+import ru.practicum.ewm.dto.eventDto.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.userDto.NewUserRequest;
+import ru.practicum.ewm.dto.userDto.UserDto;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.service.AdminService;
 

@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.compilationDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,13 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewCategoryDto {
+public class NewCompilationDto {
+    private List<Long> events;
+    private Boolean pinned = false;
 
     @NotBlank
     @Size(max = 50)
-    private String name;
+    private String title;
 }

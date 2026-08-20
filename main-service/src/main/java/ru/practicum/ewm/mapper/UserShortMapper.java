@@ -1,7 +1,7 @@
 package ru.practicum.ewm.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.ewm.dto.UserShortDto;
+import ru.practicum.ewm.dto.userDto.UserShortDto;
 import ru.practicum.ewm.model.User;
 
 @Component
