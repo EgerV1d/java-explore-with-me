@@ -5,9 +5,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.categoryDto.CategoryDto;
+import ru.practicum.ewm.dto.categoryDto.NewCategoryDto;
+import ru.practicum.ewm.dto.commentDto.CommentDto;
+import ru.practicum.ewm.dto.commentDto.ModerateCommentDto;
+import ru.practicum.ewm.dto.compilationDto.CompilationDto;
+import ru.practicum.ewm.dto.compilationDto.NewCompilationDto;
+import ru.practicum.ewm.dto.compilationDto.UpdateCompilationRequest;
+import ru.practicum.ewm.dto.eventDto.EventFullDto;
+import ru.practicum.ewm.dto.eventDto.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.userDto.NewUserRequest;
+import ru.practicum.ewm.dto.userDto.UserDto;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.service.AdminService;
+import ru.practicum.ewm.service.CommentService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +29,7 @@ import java.util.List;
 @Slf4j
 public class AdminController {
     private final AdminService adminService;
+    private final CommentService commentService;
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
@@ -101,5 +113,19 @@ public class AdminController {
     public void deleteCompilation(@PathVariable Long compId) {
         log.info("Admin delete compilation: compId={}", compId);
         adminService.deleteCompilation(compId);
+    }
+
+    @GetMapping("/pending")
+    public List<CommentDto> getPendingComments(@RequestParam(defaultValue = "0") int from,
+                                               @RequestParam(defaultValue = "10") int size) {
+        log.info("Admin get pending comments: from={}, size={}", from, size);
+        return commentService.getPendingComments(from, size);
+    }
+
+    @PatchMapping("/{commentId}")
+    public CommentDto moderateComment(@PathVariable Long commentId,
+                                      @Valid @RequestBody ModerateCommentDto request) {
+        log.info("Admin moderate comment: commentId={}, status={}", commentId, request.getStatus());
+        return commentService.moderateComment(commentId, request);
     }
 }

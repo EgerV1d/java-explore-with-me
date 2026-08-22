@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.commentDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewCategoryDto {
+public class UpdateCommentDto {
 
-    @NotBlank
-    @Size(max = 50)
-    private String name;
+    @NotBlank(message = "Текст комментария не может быть пустым")
+    @Size(min = 1, max = 2000)
+    private String text;
 }

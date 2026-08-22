@@ -1,6 +1,7 @@
 package ru.practicum.ewm.service;
 
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.eventDto.*;
+import ru.practicum.ewm.dto.request.ParticipationRequestDto;
 
 import java.util.List;
 
@@ -22,5 +23,5 @@ public interface PrivateService {
     List<ParticipationRequestDto> getEventRequests(Long userId, Long eventId);
 
     EventRequestStatusUpdateResult updateRequestStatus(Long userId, Long eventId,
-                                                        EventRequestStatusUpdateRequest request);
+                                                       EventRequestStatusUpdateRequest request);
 }

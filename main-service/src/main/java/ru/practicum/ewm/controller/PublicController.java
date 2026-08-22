@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.ewm.dto.CategoryDto;
-import ru.practicum.ewm.dto.CompilationDto;
-import ru.practicum.ewm.dto.EventFullDto;
-import ru.practicum.ewm.dto.EventShortDto;
+import ru.practicum.ewm.dto.categoryDto.CategoryDto;
+import ru.practicum.ewm.dto.commentDto.CommentDto;
+import ru.practicum.ewm.dto.compilationDto.CompilationDto;
+import ru.practicum.ewm.dto.eventDto.EventFullDto;
+import ru.practicum.ewm.dto.eventDto.EventShortDto;
+import ru.practicum.ewm.service.CommentService;
 import ru.practicum.ewm.service.PublicService;
 import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.dto.EndpointHitDto;
@@ -24,6 +26,7 @@ import java.util.List;
 public class PublicController {
     private final PublicService publicService;
     private final StatsClient statsClient;
+    private final CommentService commentService;
 
     @GetMapping("/events")
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
@@ -76,6 +79,14 @@ public class PublicController {
     public CompilationDto getCompilation(@PathVariable Long compId) {
         log.info("Public get compilation: compId={}", compId);
         return publicService.getCompilation(compId);
+    }
+
+    @GetMapping("/events/{eventId}/comments")
+    public List<CommentDto> getEventComments(@PathVariable Long eventId,
+                                             @RequestParam(defaultValue = "0") int from,
+                                             @RequestParam(defaultValue = "10") int size) {
+        log.info("Public get comments for event id={}, from={}, size={}", eventId, from, size);
+        return commentService.getEventComments(eventId, from, size);
     }
 
     private void sendStats(String uri, String ip) {

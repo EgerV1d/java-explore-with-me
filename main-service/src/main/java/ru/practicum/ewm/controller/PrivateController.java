@@ -5,7 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.commentDto.CommentDto;
+import ru.practicum.ewm.dto.commentDto.NewCommentDto;
+import ru.practicum.ewm.dto.commentDto.UpdateCommentDto;
+import ru.practicum.ewm.dto.eventDto.*;
+import ru.practicum.ewm.dto.request.ParticipationRequestDto;
+import ru.practicum.ewm.service.CommentService;
 import ru.practicum.ewm.service.PrivateService;
 
 import java.util.List;
@@ -16,6 +21,7 @@ import java.util.List;
 @Slf4j
 public class PrivateController {
     private final PrivateService privateService;
+    private final CommentService commentService;
 
     @GetMapping("/{userId}/events")
     public List<EventShortDto> getEvents(@PathVariable Long userId,
@@ -83,5 +89,38 @@ public class PrivateController {
             @Valid @RequestBody EventRequestStatusUpdateRequest request) {
         log.info("Update request status: userId={}, eventId={}, request={}", userId, eventId, request);
         return privateService.updateRequestStatus(userId, eventId, request);
+    }
+
+    @GetMapping("/{userId}/comments")
+    public List<CommentDto> getUserComments(@PathVariable Long userId,
+                                            @RequestParam(defaultValue = "0") int from,
+                                            @RequestParam(defaultValue = "10") int size) {
+        log.info("Get user comments: userId={}, from={}, size={}", userId, from, size);
+        return commentService.getUserComments(userId, from, size);
+    }
+
+    @PostMapping("/{userId}/events/{eventId}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDto addComment(@PathVariable Long userId,
+                                 @PathVariable Long eventId,
+                                 @Valid @RequestBody NewCommentDto request) {
+        log.info("Add comment: userId={}, eventId={}", userId, eventId);
+        return commentService.addComment(userId, eventId, request);
+    }
+
+    @PatchMapping("/{userId}/comments/{commentId}")
+    public CommentDto updateComment(@PathVariable Long userId,
+                                    @PathVariable Long commentId,
+                                    @Valid @RequestBody UpdateCommentDto request) {
+        log.info("Update comment: userId={}, commentId={}", userId, commentId);
+        return commentService.updateComment(userId, commentId, request);
+    }
+
+    @DeleteMapping("/{userId}/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable Long userId,
+                              @PathVariable Long commentId) {
+        log.info("Delete comment: userId={}, commentId={}", userId, commentId);
+        commentService.deleteComment(userId, commentId);
     }
 }

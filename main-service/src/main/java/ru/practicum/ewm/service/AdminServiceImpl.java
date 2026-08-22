@@ -6,14 +6,26 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.categoryDto.CategoryDto;
+import ru.practicum.ewm.dto.categoryDto.NewCategoryDto;
+import ru.practicum.ewm.dto.compilationDto.CompilationDto;
+import ru.practicum.ewm.dto.compilationDto.NewCompilationDto;
+import ru.practicum.ewm.dto.compilationDto.UpdateCompilationRequest;
+import ru.practicum.ewm.dto.eventDto.EventFullDto;
+import ru.practicum.ewm.dto.eventDto.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.userDto.NewUserRequest;
+import ru.practicum.ewm.dto.userDto.UserDto;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.mapper.*;
 import ru.practicum.ewm.model.*;
 import ru.practicum.ewm.repository.*;
+import ru.practicum.stats.client.StatsClient;
+import ru.practicum.stats.dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +46,8 @@ public class AdminServiceImpl implements AdminService {
     private final EventMapper eventMapper;
     private final CompilationMapper compilationMapper;
     private final LocationMapper locationMapper;
+
+    private final StatsClient statsClient;
 
     @Override
     @Transactional
@@ -132,10 +146,38 @@ public class AdminServiceImpl implements AdminService {
                             arr -> (Long) arr[1]
                     ));
 
+            List<String> uris = eventIds.stream()
+                    .map(id -> "/events/" + id)
+                    .toList();
+            Map<String, Long> viewsMap = new HashMap<>();
+            try {
+                List<ViewStatsDto> stats = statsClient.getStats(
+                        LocalDateTime.of(2000, 1, 1, 0, 0, 0)
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                        LocalDateTime.now().plusSeconds(1)
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                        uris,
+                        true
+                );
+                viewsMap = stats.stream()
+                        .collect(Collectors.toMap(
+                                ViewStatsDto::getUri,
+                                ViewStatsDto::getHits
+                        ));
+            } catch (Exception e) {
+                log.warn("Failed to get stats: {}", e.getMessage());
+            }
+
             for (EventFullDto dto : result) {
                 Long confirmedCount = confirmedMap.getOrDefault(dto.getId(), 0L);
                 dto.setConfirmedRequests(confirmedCount);
-                log.debug("Event id={} has {} confirmed requests", dto.getId(), confirmedCount);
+
+                String uri = "/events/" + dto.getId();
+                Long views = viewsMap.getOrDefault(uri, 0L);
+                dto.setViews(views);
+
+                log.debug("Event id={} has {} confirmed requests and {} views",
+                        dto.getId(), confirmedCount, views);
             }
         }
 

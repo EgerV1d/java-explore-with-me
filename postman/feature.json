@@ -1,0 +1,365 @@
+{
+  "info": {
+    "name": "Comments Feature Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Создание пользователя и события",
+      "item": [
+        {
+          "name": "1.1 Создать пользователя (автор события)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Статус 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('userId', response.id);",
+                  "console.log('✅ userId = ' + response.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Author User\",\n    \"email\": \"author_{{$timestamp}}@mail.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users",
+              "host": ["http://localhost:8080"],
+              "path": ["admin", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.2 Создать категорию",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Статус 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('categoryId', response.id);",
+                  "console.log('✅ categoryId = ' + response.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Category_{{$timestamp}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/categories",
+              "host": ["http://localhost:8080"],
+              "path": ["admin", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.3 Создать событие",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Статус 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('eventId', response.id);",
+                  "console.log('✅ eventId = ' + response.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"annotation\": \"Test annotation for comments\",\n    \"category\": {{categoryId}},\n    \"description\": \"Test description for comments testing\",\n    \"eventDate\": \"2026-12-31 23:59:59\",\n    \"location\": { \"lat\": 55.75, \"lon\": 37.62 },\n    \"paid\": false,\n    \"participantLimit\": 0,\n    \"requestModeration\": true,\n    \"title\": \"Test Event for Comments\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/users/{{userId}}/events",
+              "host": ["http://localhost:8080"],
+              "path": ["users", "{{userId}}", "events"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.4 Опубликовать событие",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Статус 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "console.log('✅ Событие опубликовано');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"stateAction\": \"PUBLISH_EVENT\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/events/{{eventId}}",
+              "host": ["http://localhost:8080"],
+              "path": ["admin", "events", "{{eventId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "1.5 Создать пользователя (комментатор)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Статус 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('commenterId', response.id);",
+                  "console.log('✅ commenterId = ' + response.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Commenter User\",\n    \"email\": \"commenter_{{$timestamp}}@mail.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users",
+              "host": ["http://localhost:8080"],
+              "path": ["admin", "users"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Создание комментария",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Статус 201 CREATED', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Комментарий создан и сохранен', function () {",
+              "    const comment = pm.response.json();",
+              "    pm.expect(comment).to.have.property('id');",
+              "    pm.expect(comment).to.have.property('text');",
+              "    pm.expect(comment).to.have.property('status');",
+              "    // ✅ Ожидаем PENDING, так как requestModeration = true",
+              "    pm.expect(comment.status).to.equal('PENDING');",
+              "    pm.collectionVariables.set('commentId', comment.id);",
+              "    console.log('✅ commentId = ' + comment.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"Отличное мероприятие! Очень понравилось!\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/users/{{commenterId}}/events/{{eventId}}/comments",
+          "host": ["http://localhost:8080"],
+          "path": ["users", "{{commenterId}}", "events", "{{eventId}}", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Просмотр комментариев (только PUBLISHED)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Статус 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Ответ - массив', function () {",
+              "    const comments = pm.response.json();",
+              "    pm.expect(comments).to.be.an('array');",
+              "    console.log('✅ Найдено комментариев: ' + comments.length);",
+              "});",
+              "// ✅ Комментарий с PENDING не виден в публичном API"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/events/{{eventId}}/comments",
+          "host": ["http://localhost:8080"],
+          "path": ["events", "{{eventId}}", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Обновление комментария",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Статус 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Текст обновлен', function () {",
+              "    const comment = pm.response.json();",
+              "    pm.expect(comment.text).to.equal('Обновленный текст комментария!');",
+              "    console.log('✅ Комментарий обновлен');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"Обновленный текст комментария!\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/users/{{commenterId}}/comments/{{commentId}}",
+          "host": ["http://localhost:8080"],
+          "path": ["users", "{{commenterId}}", "comments", "{{commentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Модерация комментария (публикация)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const commentId = pm.collectionVariables.get('commentId');",
+              "if (!commentId) {",
+              "    console.error('❌ commentId не найден!');",
+              "} else {",
+              "    console.log('✅ Используем commentId = ' + commentId);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Статус 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Комментарий опубликован', function () {",
+              "    const comment = pm.response.json();",
+              "    pm.expect(comment).to.have.property('status');",
+              "    pm.expect(comment.status).to.equal('PUBLISHED');",
+              "    console.log('✅ Комментарий опубликован');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"status\": \"PUBLISHED\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/admin/{{commentId}}",
+          "host": ["http://localhost:8080"],
+          "path": ["admin", "{{commentId}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Удаление комментария",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Статус 204 NO CONTENT', function () {",
+              "    pm.response.to.have.status(204);",
+              "    console.log('✅ Комментарий удален');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8080/users/{{commenterId}}/comments/{{commentId}}",
+          "host": ["http://localhost:8080"],
+          "path": ["users", "{{commenterId}}", "comments", "{{commentId}}"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {"key": "userId", "value": ""},
+    {"key": "categoryId", "value": ""},
+    {"key": "eventId", "value": ""},
+    {"key": "commenterId", "value": ""},
+    {"key": "commentId", "value": ""}
+  ]
+}
