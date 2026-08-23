@@ -1,6 +1,5 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.comment;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,14 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewUserRequest {
+public class NewCommentDto {
 
-    @NotBlank
-    @Size(min = 2, max = 250)
-    private String name;
-
-    @NotBlank
-    @Email
-    @Size(min = 6, max = 254)
-    private String email;
+    @NotBlank(message = "Текст комментария не может быть пустым")
+    @Size(min = 1, max = 2000)
+    private String text;
 }

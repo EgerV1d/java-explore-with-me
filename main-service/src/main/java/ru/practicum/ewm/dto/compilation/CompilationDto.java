@@ -1,10 +1,10 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.compilation;
 
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.dto.event.EventShortDto;
 
 import java.util.List;
 
@@ -12,11 +12,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCompilationRequest {
-
-    @Size(max = 50)
+public class CompilationDto {
+    private Long id;
     private String title;
-
     private Boolean pinned;
-    private List<Long> events;
+    private List<EventShortDto> events;
 }

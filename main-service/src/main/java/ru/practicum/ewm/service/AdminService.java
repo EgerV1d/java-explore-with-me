@@ -1,6 +1,14 @@
 package ru.practicum.ewm.service;
 
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.category.CategoryDto;
+import ru.practicum.ewm.dto.category.NewCategoryDto;
+import ru.practicum.ewm.dto.compilation.CompilationDto;
+import ru.practicum.ewm.dto.compilation.NewCompilationDto;
+import ru.practicum.ewm.dto.compilation.UpdateCompilationRequest;
+import ru.practicum.ewm.dto.event.EventFullDto;
+import ru.practicum.ewm.dto.event.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.user.NewUserRequest;
+import ru.practicum.ewm.dto.user.UserDto;
 import ru.practicum.ewm.model.Event;
 
 import java.time.LocalDateTime;

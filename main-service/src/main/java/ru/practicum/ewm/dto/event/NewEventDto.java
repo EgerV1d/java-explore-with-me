@@ -1,10 +1,11 @@
-package ru.practicum.ewm.dto;
+package ru.practicum.ewm.dto.event;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.dto.location.LocationDto;
 
 import java.time.LocalDateTime;
 
