@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.locationDto;
+package ru.practicum.ewm.dto.location;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

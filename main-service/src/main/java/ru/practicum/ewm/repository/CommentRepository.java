@@ -13,7 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c WHERE c.event.id = :eventId AND c.status = 'PUBLISHED'")
     List<Comment> findPublishedByEventId(@Param("eventId") Long eventId, Pageable pageable);
 
-    List<Comment> findByAuthorIdOrderByCreatedOnDesc(Long userId, Pageable pageable);
+    List<Comment> findByAuthorId(Long userId, Pageable pageable);
 
     List<Comment> findByStatusOrderByCreatedOnAsc(Comment.CommentStatus status, Pageable pageable);
 }

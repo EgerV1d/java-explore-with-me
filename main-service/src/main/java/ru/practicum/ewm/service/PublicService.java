@@ -1,9 +1,9 @@
 package ru.practicum.ewm.service;
 
-import ru.practicum.ewm.dto.categoryDto.CategoryDto;
-import ru.practicum.ewm.dto.compilationDto.CompilationDto;
-import ru.practicum.ewm.dto.eventDto.EventFullDto;
-import ru.practicum.ewm.dto.eventDto.EventShortDto;
+import ru.practicum.ewm.dto.category.CategoryDto;
+import ru.practicum.ewm.dto.compilation.CompilationDto;
+import ru.practicum.ewm.dto.event.EventFullDto;
+import ru.practicum.ewm.dto.event.EventShortDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

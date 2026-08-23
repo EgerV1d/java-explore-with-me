@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.eventDto;
+package ru.practicum.ewm.dto.event;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.dto.locationDto.LocationDto;
+import ru.practicum.ewm.dto.location.LocationDto;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateEventAdminRequest {
+public class UpdateEventUserRequest {
 
     @Size(min = 20, max = 2000)
     private String annotation;
@@ -27,13 +27,13 @@ public class UpdateEventAdminRequest {
     private LocalDateTime eventDate;
     private LocationDto location;
     private Boolean paid;
-
-    @PositiveOrZero(message = "Лимит участников не может быть отрицательным")
-    private Integer participantLimit;
     private Boolean requestModeration;
 
     @Size(min = 3, max = 120)
     private String title;
 
     private String stateAction;
+
+    @PositiveOrZero(message = "Лимит участников не может быть отрицательным")
+    private Integer participantLimit;
 }

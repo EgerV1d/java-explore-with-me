@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.commentDto;
+package ru.practicum.ewm.dto.compilation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,13 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCommentDto {
+public class NewCompilationDto {
+    private List<Long> events;
+    private Boolean pinned = false;
 
-    @NotBlank(message = "Текст комментария не может быть пустым")
-    @Size(min = 1, max = 2000)
-    private String text;
+    @NotBlank
+    @Size(max = 50)
+    private String title;
 }

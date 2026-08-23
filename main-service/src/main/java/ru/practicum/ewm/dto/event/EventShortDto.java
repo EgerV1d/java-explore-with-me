@@ -1,11 +1,11 @@
-package ru.practicum.ewm.dto.eventDto;
+package ru.practicum.ewm.dto.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.dto.userDto.UserShortDto;
-import ru.practicum.ewm.dto.categoryDto.CategoryDto;
+import ru.practicum.ewm.dto.user.UserShortDto;
+import ru.practicum.ewm.dto.category.CategoryDto;
 
 import java.time.LocalDateTime;
 

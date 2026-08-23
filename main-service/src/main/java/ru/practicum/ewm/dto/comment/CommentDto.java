@@ -1,10 +1,10 @@
-package ru.practicum.ewm.dto.commentDto;
+package ru.practicum.ewm.dto.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.ewm.dto.userDto.UserShortDto;
+import ru.practicum.ewm.dto.user.UserShortDto;
 import ru.practicum.ewm.model.Comment;
 
 import java.time.LocalDateTime;

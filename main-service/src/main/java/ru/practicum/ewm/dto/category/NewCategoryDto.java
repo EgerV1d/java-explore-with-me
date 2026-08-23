@@ -1,6 +1,6 @@
-package ru.practicum.ewm.dto.userDto;
+package ru.practicum.ewm.dto.category;
 
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,13 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private Long id;
+public class NewCategoryDto {
 
-    @Size(max = 250)
+    @NotBlank
+    @Size(max = 50)
     private String name;
-
-    @Email
-    @Size(max = 254)
-    private String email;
 }

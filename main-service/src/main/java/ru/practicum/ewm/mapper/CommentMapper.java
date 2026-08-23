@@ -3,8 +3,8 @@ package ru.practicum.ewm.mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.ewm.dto.commentDto.CommentDto;
-import ru.practicum.ewm.dto.commentDto.NewCommentDto;
+import ru.practicum.ewm.dto.comment.CommentDto;
+import ru.practicum.ewm.dto.comment.NewCommentDto;
 import ru.practicum.ewm.model.Comment;
 import ru.practicum.ewm.model.Event;
 import ru.practicum.ewm.model.User;
@@ -22,20 +22,15 @@ public class CommentMapper {
     public CommentDto toDto(Comment comment) {
         if (comment == null) return null;
 
-        try {
-            return CommentDto.builder()
-                    .id(comment.getId())
-                    .text(comment.getText())
-                    .createdOn(comment.getCreatedOn())
-                    .updatedOn(comment.getUpdatedOn())
-                    .author(userShortMapper.toDto(comment.getAuthor()))
-                    .eventId(comment.getEvent() != null ? comment.getEvent().getId() : null)
-                    .status(comment.getStatus())
-                    .build();
-        } catch (Exception e) {
-            log.warn("Ошибка маппинга Comment в CommentDto: {}", e.getMessage());
-            return null;
-        }
+        return CommentDto.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .createdOn(comment.getCreatedOn())
+                .updatedOn(comment.getUpdatedOn())
+                .author(userShortMapper.toDto(comment.getAuthor()))
+                .eventId(comment.getEvent() != null ? comment.getEvent().getId() : null)
+                .status(comment.getStatus())
+                .build();
     }
 
     public Comment toEntity(NewCommentDto dto, User author, Event event) {

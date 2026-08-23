@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.dto.commentDto.CommentDto;
-import ru.practicum.ewm.dto.commentDto.ModerateCommentDto;
-import ru.practicum.ewm.dto.commentDto.NewCommentDto;
-import ru.practicum.ewm.dto.commentDto.UpdateCommentDto;
+import ru.practicum.ewm.dto.comment.CommentDto;
+import ru.practicum.ewm.dto.comment.ModerateCommentDto;
+import ru.practicum.ewm.dto.comment.NewCommentDto;
+import ru.practicum.ewm.dto.comment.UpdateCommentDto;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.mapper.CommentMapper;
@@ -119,8 +120,8 @@ public class CommentServiceImpl implements CommentService {
             throw new NotFoundException("Пользователь с id=" + userId + " не найден");
         }
 
-        Pageable pageable = PageRequest.of(from / size, size);
-        List<Comment> comments = commentRepository.findByAuthorIdOrderByCreatedOnDesc(userId, pageable);
+        Pageable pageable = PageRequest.of(from / size, size, Sort.by("createdOn").descending());
+        List<Comment> comments = commentRepository.findByAuthorId(userId, pageable);
         return commentMapper.toDtoList(comments);
     }
 
