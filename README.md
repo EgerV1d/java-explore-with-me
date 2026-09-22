@@ -1,5 +1,30 @@
-# java-explore-with-me
-Template repository for ExploreWithMe project.
+# Explore With Me
 
-Ссылка на Pull Request:
-https://github.com/EgerV1d/java-explore-with-me/pull/5
+Backend для афиши событий: пользователи публикуют события, ищут компанию для участия и оставляют заявки.
+
+## Архитектура
+
+Микросервисы:
+- **main-service** - бизнес-логика: события, категории, подборки, заявки
+- **stats** - сбор и агрегация статистики просмотров
+
+Сервисы общаются через REST API и запускаются в Docker.
+
+## Стек
+
+Java 21, Spring Boot, Spring Data, Hibernate, PostgreSQL, Docker, Maven, Mockito, Lombok  
+
+## Что реализовано
+
+- Трёхуровневое REST API: Public / Private / Admin
+- Жизненный цикл: создание -> модерация -> публикация / отклонение
+- Подача и подтверждение заявок на участие с учётом лимитов
+- Комментарии к событиям
+- Статистика просмотров через отдельный сервис
+
+## Запуск 
+```bash
+mvn clean package
+docker-compose up
+```
+
